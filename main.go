@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/anacrolix/torrent"
@@ -12,16 +13,31 @@ import (
 
 func main() {
 	// Проверяем аргументы командной строки
-	if len(os.Args) < 2 {
-		fmt.Println("Использование: ./torrent-downloader <torrent-file|magnet-link>")
+	if len(os.Args) < 3 {
+		fmt.Println("Использование: ./torrent-downloader <download-directory> <torrent-file|magnet-link>")
 		os.Exit(1)
 	}
-	torrentSource := os.Args[1]
+	
+	downloadDir := os.Args[1]
+	torrentSource := os.Args[2]
+
+	// Создаем директорию для загрузок, если она не существует
+	if err := os.MkdirAll(downloadDir, 0755); err != nil {
+		log.Fatalf("Не удалось создать директорию для загрузок: %v", err)
+	}
+
+	// Получаем абсолютный путь к директории
+	absDownloadDir, err := filepath.Abs(downloadDir)
+	if err != nil {
+		log.Fatalf("Ошибка получения абсолютного пути: %v", err)
+	}
+
+	fmt.Printf("Файлы будут загружены в: %s\n", absDownloadDir)
 
 	// Конфигурация клиента
 	cfg := torrent.NewDefaultClientConfig()
-	cfg.DataDir = "./downloads" // Папка для загрузок
-	cfg.ListenPort = 0          // Случайный порт
+	cfg.DataDir = absDownloadDir // Указываем абсолютный путь для загрузок
+	cfg.ListenPort = 0           // Случайный порт
 
 	// Создаем клиент
 	client, err := torrent.NewClient(cfg)
