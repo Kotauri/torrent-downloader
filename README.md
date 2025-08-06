@@ -23,17 +23,17 @@ go build -o torrent-dl
 
 ```bash
 # Для .torrent файла
-./torrent-dl file.torrent
+./torrent-downloader /path/to/download/directory /path/to/torrent/file.torrent
 
 # Для magnet-ссылки
-./torrent-dl "magnet:?xt=urn:btih:..."
+./torrent-downloader /path/to/download/directory "magnet:?xt=urn:btih:..."
 ```
 ## 👷 Конфигурация
 Измените параметры в коде:
 ```go
 go
-cfg.DataDir = "./downloads" // Папка для загрузок
-cfg.ListenPort = 0         // Порт (0 = случайный)
+cfg.DataDir = absDownloadDir // Указываем абсолютный путь для загрузок
+cfg.ListenPort = 0           // Случайный порт
 ```
 
 ## 💥 Пример вывода
@@ -45,13 +45,9 @@ Download completed!
 ```
 ## 🚑️ Features
 + Supports both torrent files and magnet links
-
 + Real-time progress reporting
-
 + Shows download speed and peers
-
 + Cross-platform (Windows/Linux/macOS)
-
 
 ## ♻️ Лицензия
 
